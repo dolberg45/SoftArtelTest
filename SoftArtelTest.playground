@@ -1,0 +1,110 @@
+import UIKit
+
+func findRange(text: String, position: Int) -> String {
+    
+    var range: String = ""
+
+    let textArray = Array(text)
+    
+    var start: Character?
+    var end: Character?
+    
+    if text.count == 0 {
+        return "Передана пустая строка."
+    }
+    
+    if textArray[position] == "\n" { //Если Каретка на элементе == "\n"
+        
+        if textArray.count == 1 {
+            return "Пустой диапазон"
+        } else {
+            
+            var start1: Character?
+            var end1: Character?
+            
+            end = textArray[position-1]
+            start1 = textArray[position+1]
+            
+            if textArray[position-1] == "\n" {
+                print("Пустой диапазон слева.")
+            } else {
+                
+                for index in stride(from: position-1, through: 0, by: -1) {
+                    
+                    if index == 0 {
+                        start = textArray[index]
+                        range = "[\(start!);\(end!)]"
+                        break
+                    }
+                    
+                    if textArray[index] == "\n" {
+                        start = textArray[index+1]
+                        range = "[\(start!);\(end!)]"
+                        break
+                    }
+                }
+            }
+            
+            if textArray[position+1] == "\n" {
+                print("Пустой диапазон справа.")
+            } else {
+                
+                for index in stride(from: position+1, through: textArray.count-1, by: 1) {
+                    
+                    if index == textArray.count-1 {
+                        end1 = textArray[index]
+                        range += "[\(start1!);\(end1!)]"
+                        break
+                    }
+                    
+                    if textArray[index] == "\n" {
+                        end1 = textArray[index-1]
+                        range += "[\(start1!);\(end1!)]"
+                        break
+                    }
+                }
+            }
+        }
+    }
+    
+    else {
+        
+        for index in stride(from: position, through: 0, by: -1) {
+            
+            if index == 0 {
+                start = textArray[index]
+                break
+            }
+            
+            if textArray[index] == "\n" {
+                start = textArray[index+1]
+                break
+            }
+        }
+        
+        for index in stride(from: position, through: textArray.count-1, by: 1) {
+            
+            if index == textArray.count-1 {
+                end = textArray[index]
+                range = "[\(start!);\(end!)]"
+                break
+            }
+            
+            if textArray[index] == "\n" {
+                end = textArray[index-1]
+                range = "[\(start!);\(end!)]"
+                break
+            }
+        }
+    }
+    
+    return range
+}
+
+
+//Случай, когда position указывает на \n, то этот \n может быть как концом одного набора символов, так и началом другого.
+
+var text = "lsa\n!sab\nkru?\nqwe"
+print(findRange(text: text, position: 8)) //Ответ: [!;b][k;?]
+
+print(findRange(text: text, position: 7)) //Ответ: [!;b]
